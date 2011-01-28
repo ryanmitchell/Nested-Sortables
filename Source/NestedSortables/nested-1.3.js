@@ -1,3 +1,15 @@
+/*
+
+	NestedSortables.js
+	
+	A MooTools class to provide a sortable nested tree structure
+	
+	Created by Ryan Mitchell (ryanmitchell@thoughtcollective.com)
+	http://github.com/ryanmitchell/
+	
+	Based on the MooTools 1.1 class for nested sortables by CrazyDave (outdated website link)
+
+*/
 var NestedSortables = new Class({
 
 	Implements: [Options, Events],
@@ -190,7 +202,7 @@ var NestedSortables = new Class({
 	
 	},
 
-	end: function(el){
+	end: function(event, el){
 	
 		if (this.options.ghost) this.ghost.destroy();
 		
