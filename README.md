@@ -3,8 +3,6 @@ Nested Sortables
 
 Nested Sortables is a class to provide sortable-like function on a nested element.
 
-![Screenshot](http://url_to_project_screenshot)
-
 How to use
 ----------
 
