@@ -1,14 +1,18 @@
 /*
+---
+description: A MooTools class to provide a sortable nested tree structure
 
-	NestedSortables.js
-	
-	A MooTools class to provide a sortable nested tree structure
-	
-	Created by Ryan Mitchell (ryanmitchell@thoughtcollective.com)
-	http://github.com/ryanmitchell/
-	
-	Based on the MooTools 1.1 class for nested sortables by CrazyDave (outdated website link)
+license: MIT-style
 
+authors:
+- Ryan Mitchell
+
+requires:
+- core/1.3.0: '*'
+
+provides: [NestedSortables]
+
+...
 */
 var NestedSortables = new Class({
 
@@ -179,28 +183,6 @@ var NestedSortables = new Class({
 			this.list.removeEvent('click', this.bound.collapse);
 		}
 	},
-	
-	serialize: function(listEl){
-		
-		var serial = [];
-		var kids;
-		
-		if (!listEl) listEl = this.list;
-		
-		listEl.getChildren().each(function(node, i){
-		
-			kids = node.getElements(this.options.parentTag);
-			
-			serial[i] = {
-				id: node.id,
-				children: (kids) ? this.serialize(kids) : []
-			};
-			
-		}.bind(this));
-		
-		return serial;
-	
-	},
 
 	end: function(event, el){
 	
@@ -329,6 +311,7 @@ var NestedSortables = new Class({
 			abort += (move == 'before' && dest.getPrevious() == el);
 			abort += (this.options.lock == 'depth' && el.depth != this.getDepth(dest, (move == 'inside')));
 			abort += (this.options.lock == 'parent' && (move == 'inside' || dest.parentNode != el.parentNode));
+			abort += (this.options.lock == 'list' && this.getDepth(dest, (move == 'inside')) == 0);
 			abort += (dest.offsetHeight == 0);
 			sub = over.getElement(this.options.parentTag);
 			sub = (sub) ? sub.getCoordinates().top : 0;

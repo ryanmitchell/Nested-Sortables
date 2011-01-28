@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Nested Sortables Demo</title>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.3/mootools-yui-compressed.js"></script>
+	<script type="text/javascript" src="../Source/nested-1.3.js"></script>
+	<script type="text/javascript">
+		//<![CDATA[
+	
+		var InsertIt = function() {
+			var li = new Element('li').setProperty('id', $('id').value).appendText($('text').value).injectInside($('example'));
+		};
+		
+		var LockIt = function() {
+			sortIt.options.lock = ($('locking').value.length == 0) ? null : $('locking').value;
+		};
+		
+		var sortIt;
+		window.addEvent('domready', function() {
+			sortIt = new NestedSortables('example', {
+				collapse: true,
+				events: {
+					onStart: function(el){
+						console.log(el);
+						el.addClass('drag');
+					},
+					onComplete: function(el) {
+						el.removeClass('drag');
+					}
+				}
+			});
+			$('locking').addEvent('change', LockIt);
+			$('insert').addEvent('click', InsertIt);
+		});
+		//]]>
+	</script>
+	<style type="text/css">
+		html { font-family:verdana; font-size: 13px; }
+		#container { width:800px; margin:0px auto; }
+		h1 {font-size:1.6em;}
+		h2 {font-size:1.5em;}
+		h3 {font-size:1.4em;}
+		h4 {font-size:1.3em;}
+		h5 {font-size:1.2em;}
+		h6 {font-size:1.1em;}
+		pre {overflow:auto; height: 100px; width:90%; background-color:#eee; border:1px solid black;}
+		ol {cursor:pointer; background-color:#fff;}
+		li {margin-left:3em;}
+		.drag {background-color:#ccc;}
+		.nCollapse {background-color:#ddd; color:red;}
+		.unlocked {background-color:#cfc;}
+	</style>
+</head>
+<body>
+
+	<div id="container">
+	
+		<h1>Nested sortable lists</h1>
+		
+		<p>I've added some extra HTML to a few list items, just to help show/test that everything still works.</p>
+		<label for="locking">Sorting restriction: <select name="locking" id="locking">
+			<option value="">None</option>
+			<option value="parent">Same parent only</option>
+			<option value="depth">Same depth only</option>
+			<option value="class" style="background-color: rgb(204, 255, 204);">Only move items with the class "unlocked"</option>
+		</select></label><br>
+		<ol id="example">
+			<li id="item1">Item 1</li>
+			<li id="item2">Item 2</li>
+			<li id="item3">Item 3
+				<ol>
+					<li id="item3-1">Item 3.1</li>
+					<li id="item3-2">Item 3.2</li>
+					<li id="item3-3">Item 3.3
+						<ol>
+							<li id="item3-3-1">Item 3.3.1<br>
+								A little extra text to make things different.
+							</li>
+							<li id="item3-3-2">Item 3.3.2</li>
+							<li id="item3-3-3">Item 3.3.3
+								<ol>
+									<li id="item3-3-3-1">Item 3.3.3.1</li>
+								</ol>
+							</li>
+						</ol>
+					</li>
+				</ol>
+			</li>
+			<li id="item4">Item 4</li>
+			<li id="item5" class="unlocked">Item 5
+				<ol>
+					<li id="item5-1">Item 5.1</li>
+					<li id="item5-2">Item 5.2</li>
+					<li id="item5-3">Item 5.3</li>
+				</ol>
+			</li>
+			<li id="item16">Item 6</li>
+			<li id="item17">Item 7</li>
+			<li id="item18">Item 8</li>
+			<li id="item19">Item 9</li>
+			<li id="item10" class="unlocked">Item 10</li>
+			<li id="item11">Item 11</li>
+		</ol>
+		<hr>
+		
+		<p>You can dynamically insert a list item and it'll automagically drag about</p>
+		<p>
+		ID: <input name="id" id="id" value="item12" type="text"> 
+		Text: <input name="text" id="text" value="Item 12" type="text"> 
+		<input name="insert" id="insert" value="Insert a new item" type="button"></p>
+	
+	</div>
+
+</body>
+</html>
