@@ -21,6 +21,8 @@ var NestedSortables = new Class({
 	options: {
 		childTag: 'li',
 		ghost: true,
+		ghostClass: 'ghost',
+		ghostOffset: { x: 20, y: 10 },
 		childStep: 30, // attempts to become a child if the mouse is moved this number of pixels right
 		handleClass: null, 
 		onStart: Class.empty,
@@ -29,6 +31,7 @@ var NestedSortables = new Class({
 		collapseClass: 'nCollapse', // Class added to collapsed items
 		expandKey: 'shift', // control | shift
 		lock: null, // parent || depth || class
+		lockDepth: null,
 		lockClass: 'unlocked'
 	},
 	
@@ -88,9 +91,9 @@ var NestedSortables = new Class({
 				'opacity': 0.5,
 				'position': 'absolute',
 				'visibility': 'hidden',
-				'top': event.page.y+'px',
-				'left': (event.page.x+10)+'px'
-			}).inject(document.body, 'inside');
+				'top': (event.page.y+this.options.ghostOffset.y)+'px',
+				'left': (event.page.x+this.options.ghostOffset.x)+'px'
+			}).addClass(this.options.ghostClass).inject(document.body, 'inside');
 		}
 		
 		el.depth = this.getDepth(el);
@@ -214,8 +217,8 @@ var NestedSortables = new Class({
 			this.ghost.setStyles({
 				'position': 'absolute',
 				'visibility': 'visible',
-				'top': event.page.y+'px',
-				'left': (event.page.x+10)+'px'
+				'top': (event.page.y+this.options.ghostOffset.y)+'px',
+				'left': (event.page.x+this.options.ghostOffset.x)+'px'
 			});
 		}
 		
@@ -309,7 +312,8 @@ var NestedSortables = new Class({
 			abort += (dest == el);
 			abort += (move == 'after' && dest.getNext() == el);
 			abort += (move == 'before' && dest.getPrevious() == el);
-			abort += (this.options.lock == 'depth' && el.depth != this.getDepth(dest, (move == 'inside')));
+			abort += (this.options.lock == 'depth' && this.options.lockDepth != null && this.getDepth(dest, (move == 'inside')) <= this.options.lockDepth);
+			abort += (this.options.lock == 'depth' && this.options.lockDepth == null && el.depth != this.getDepth(dest, (move == 'inside')));
 			abort += (this.options.lock == 'parent' && (move == 'inside' || dest.parentNode != el.parentNode));
 			abort += (this.options.lock == 'list' && this.getDepth(dest, (move == 'inside')) == 0);
 			abort += (dest.offsetHeight == 0);
@@ -326,6 +330,21 @@ var NestedSortables = new Class({
 		}
 		
 		event.stop();
-	}
+	},
 	
+	// serialize structure
+	serialize: function(fn, base){
+		if (!base) base = this.list;
+		if (!fn) fn = function(el){
+			return el.get('id');
+		};
+		
+		var result = {};
+		base.getChildren('li').each(function(el){
+			var child = el.getElement('ul');
+			result[fn(el)] = child ? this.serialize(fn, child) : true;
+		}, this);
+		return result;
+	}
+
 });
