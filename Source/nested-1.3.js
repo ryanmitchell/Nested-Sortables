@@ -74,7 +74,7 @@ var NestedSortables = new Class({
 		} 
 		
 		while (el.get('tag').toLowerCase() != this.options.childTag && el != this.list){
-			el = el.parentNode;
+			el = document.id(el.parentNode);
 		}
 
 		// bugs out here		
